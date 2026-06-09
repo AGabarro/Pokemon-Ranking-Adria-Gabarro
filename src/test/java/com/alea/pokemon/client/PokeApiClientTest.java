@@ -76,11 +76,22 @@ class PokeApiClientTest {
     }
 
     @Test
-    void fetchAllEmptyResponseThrowsPokeApiException() {
+    void fetchAllServerErrorThrowsPokeApiException() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(500));
 
         assertThatThrownBy(() -> pokeApiClient.fetchAll())
                 .isInstanceOf(PokeApiException.class);
+    }
+
+    @Test
+    void fetchAllNullBodyThrowsPokeApiException() {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json"));
+
+        assertThatThrownBy(() -> pokeApiClient.fetchAll())
+                .isInstanceOf(PokeApiException.class)
+                .hasMessageContaining("empty");
     }
 
     @Test
