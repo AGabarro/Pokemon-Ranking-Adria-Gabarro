@@ -30,7 +30,7 @@ class PokemonServiceTest {
     }
 
     @Test
-    void getHeaviest_returnsTopFiveSortedByWeightInKg() {
+    void getHeaviestReturnsTopFiveSortedByWeightInKg() {
         List<PokemonRankingDto> result = pokemonService.getHeaviest();
 
         assertThat(result).hasSize(5);
@@ -42,7 +42,7 @@ class PokemonServiceTest {
     }
 
     @Test
-    void getHighest_returnsTopFiveSortedByHeightInMetres() {
+    void getHighestReturnsTopFiveSortedByHeightInMetres() {
         List<PokemonRankingDto> result = pokemonService.getHighest();
 
         assertThat(result).hasSize(5);
@@ -54,7 +54,7 @@ class PokemonServiceTest {
     }
 
     @Test
-    void getMostExperience_returnsTopFiveSortedByBaseExperience() {
+    void getMostExperienceReturnsTopFiveSortedByBaseExperience() {
         List<PokemonRankingDto> result = pokemonService.getMostExperience();
 
         assertThat(result).hasSize(5);
@@ -65,7 +65,7 @@ class PokemonServiceTest {
     }
 
     @Test
-    void getMostExperience_filtersOutNullBaseExperience() {
+    void getMostExperienceFiltersOutNullBaseExperience() {
         List<PokemonRankingDto> result = pokemonService.getMostExperience();
 
         assertThat(result).extracting(PokemonRankingDto::name)
@@ -73,14 +73,14 @@ class PokemonServiceTest {
     }
 
     @Test
-    void getHeaviest_whenEmptyList_returnsEmpty() {
+    void getHeaviestWhenEmptyListReturnsEmpty() {
         when(pokeApiClient.fetchAll()).thenReturn(List.of());
 
         assertThat(pokemonService.getHeaviest()).isEmpty();
     }
 
     @Test
-    void getMostExperience_whenAllBaseExperienceNull_returnsEmpty() {
+    void getMostExperienceWhenAllBaseExperienceNullReturnsEmpty() {
         when(pokeApiClient.fetchAll()).thenReturn(List.of(
                 new PokeApiPokemonResponse(1, "pokemon-a", 1000, 200, null),
                 new PokeApiPokemonResponse(2, "pokemon-b", 900, 180, null)
