@@ -19,7 +19,7 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        CaffeineCache rankingsCache = new CaffeineCache("pokemonRankings",
+        CaffeineCache rankingsCache = new CaffeineCache("allPokemon",
                 Caffeine.newBuilder()
                         .expireAfterWrite(ttlMinutes, TimeUnit.MINUTES)
                         .maximumSize(100)
