@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -56,10 +59,13 @@ public class PokeApiClient {
 
     PokeApiPokemonResponse fetchOne(String name) {
         try {
+            log.info("Fetching pokemon={}", name);
             return webClient.get()
                     .uri("/pokemon/{name}", name)
                     .retrieve()
                     .bodyToMono(PokeApiPokemonResponse.class)
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofMillis(300))
+                            .filter(e -> !(e instanceof WebClientResponseException.NotFound)))
                     .block();
         } catch (Exception e) {
             log.warn("Failed to fetch pokemon={}: {}", name, e.getMessage());

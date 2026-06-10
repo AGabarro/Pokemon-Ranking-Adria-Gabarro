@@ -55,6 +55,10 @@ boilerplate.
 **Nullable baseExperience:** Some Pokémon in PokéAPI return null for base experience. It is typed as Integer (nullable) and filtered out before ranking to avoid a                
 NullPointerException.
 
+**Response buffer size:** PokeAPI responses for individual Pokémon are large (moves, sprites, abilities). The default WebClient buffer of 256KB was too small, causing many Pokémon to be silently dropped. Observed in the server logs as `DataBufferLimitException`. Raised to 5MB via `spring.codec.max-in-memory-size=5MB` in `application.properties`.
+
+**Retry on transient failures:** running the server revealed 5–10 Pokémon failing per request due to connection resets or timeouts from PokéAPI under concurrent load. `fetchOne` now retries up to 3 times with a 300ms fixed delay. 404s are excluded from retries since a missing Pokémon will not appear on a second attempt.
+
 **Error handling:** all failures reaching PokéAPI throw a `PokeApiException`,
 caught centrally by `PokeApiExceptionHandler` (`@RestControllerAdvice`) and
 returned as `503 Service Unavailable`. Internal stack traces never reach the

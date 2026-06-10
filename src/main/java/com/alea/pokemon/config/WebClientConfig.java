@@ -19,11 +19,11 @@ public class WebClientConfig {
     private int timeoutSeconds;
 
     @Bean
-    public WebClient pokeApiWebClient() {
+    public WebClient pokeApiWebClient(WebClient.Builder builder) {
         HttpClient httpClient = HttpClient.create()
                 .responseTimeout(Duration.ofSeconds(timeoutSeconds));
 
-        return WebClient.builder()
+        return builder
                 .baseUrl(baseUrl)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
